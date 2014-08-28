@@ -8,12 +8,20 @@
   <script src="/bower_components/underscore/underscore-min.js"></script>
   <script src="/bower_components/lunr.js/lunr.min.js"></script>
   <style media="screen">
-    .map-canvas { height: 300px; }
+    .map-canvas { height: 400px; }
   </style>
 </head>
 <body>
   <h1>Yo!</h1>
-  <div id="map-view" data-latitude="0" data-longitude="0" data-feed="http://www.json-generator.com/api/json/get/bQMWbHYAjm?indent=2"></div>
+  <div id="map-view"
+    data-latitude="50"
+    data-longitude="2.5"
+    data-zoom="5"
+    data-filter="favoriteFruit"
+    data-lunr="name|10,gender|10,eyeColor|5,tags|1"
+    data-templateSingle="/templates/single.html"
+    data-templateList="/templates/list.html"
+    data-feed="http://www.json-generator.com/api/json/get/bZaGvEKgia?indent=2"></div>
   <script>
     map = new LunrGmap('#map-view');
   </script>

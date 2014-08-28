@@ -8,74 +8,74 @@ module.exports = class LunrGmap
     @loader =
       map: false
       feed: false
+    @templates =
+      single: ""
+      list: ""
 
     @$el = $(@selector)
+    @templates.single = @$el.attr('data-templateSingle')
+    @templates.list = @$el.attr('data-templateList')
+    @fields = @parseFields(@$el.attr('data-lunr'))
 
-    @mapId = 'map-canvas-'+getUID()
-    @$el.html('<div id="'+@mapId+'" class="map-canvas" />')
-    @map = new Gmap(@mapId, @$el.attr('data-latitude'), @$el.attr('data-longitude'))
+    # Init Gmap
+    @map = new Gmap(@selector, @$el.attr('data-latitude'), @$el.attr('data-longitude'), parseInt(@$el.attr('data-zoom')))
+    @map.$el.on "load", =>
+      @loader.map = true
+      Marker = require('./Marker.coffee')
+      if @loader.feed
+        @addMarkers(@feed)
+
+    # Init feed
     $.get(@$el.attr('data-feed'))
       .done (data) =>
         @feed = data
         @loader.feed = true
         if @loader.map
           @addMarkers(@feed)
+        # Init search
+        @search = new Search(@selector, @feed, @fields)
+        @search.$el.on "search.change", (e, data) =>
+          google.maps.event.trigger @map.gmap, "search.changed", data.refs
 
-    @map.$el.on "load", =>
-      @loader.map = true
-      Marker = require('./Marker.coffee')
+    # Init Popin
+    @popin = new Popin(@selector)
 
-      if @loader.feed
-        @addMarkers(@feed)
+    # Init Templates
+    $.get(@templates.single)
+      .done (data) =>
+        @templates.single = _.template(data)
 
-      # $.get(feed)
-      #   .done (data) =>
-      #     @places = data
-      #     @loadGoogleMaps()
-      #     in_map_xml.search = new Search("#map-search", data)
-      #
-      # $.get("/typo3conf/ext/in_map_xml/assets/template_single.html")
-      #   .done (data) =>
-      #     @templateSingle = data
-      #
-      # $.get("/typo3conf/ext/in_map_xml/assets/template_list.html")
-      #   .done (data) =>
-      #     @templateList = data
+    $.get(@templates.list)
+      .done (data) =>
+        @templates.list = _.template(data)
 
   addMarkers: (data) ->
     @markers = new Array
     for marker in data
       @addMarker(marker)
+
     return @
 
   addMarker: (data)->
-    marker = new Marker
-      id: data.id
-      title: data.title
-      categoryTxt: data.category
-      subcategory: data.subcategory
-      url: data.url
-      description: data.description
-      chapo: data.chapo
-      address: data.address
-      phone: data.phone
-      position: new google.maps.LatLng(data.latitude,data.longitude)
-      # icon:
-      #   url: "/typo3conf/ext/in_map_xml/assets/img/pointer_"+place.category_id+".png"
-      #   anchor: new google.maps.Point(50, 50)
-
-    # if data.category_id
-    #   marker.setCategory(data.category_id)
-    #   marker.checkCategory()
-
-    # Add the marker to the map
-    marker.setMap(@map.gmap)
+    data.position = new google.maps.LatLng(data.latitude,data.longitude)
+    data.map = @map.gmap
+    marker = new Marker(data)
 
     @markers.push(marker)
 
+    google.maps.event.addListener marker, 'click', () =>
+      @displaySingle(marker)
     return @
 
-getUID = () ->
-  return new Date().getTime()
+  displaySingle: (marker) ->
+    @popin.setContent(@templates.single(marker))
+    return @
+
+  parseFields: (data) ->
+    fields = new Array()
+    for field in data.split(',')
+      field = field.split('|')
+      fields.push([field[0], parseInt(field[1])])
+    return fields
 
 window.LunrGmap = LunrGmap

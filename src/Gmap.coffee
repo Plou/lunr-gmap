@@ -1,7 +1,10 @@
 module.exports = class Gmap
-  constructor: (@id, @latitude, @longitude, @zoom) ->
+  constructor: (parent, @latitude, @longitude, @zoom) ->
+    @id = 'map-canvas-'+(new Date().getTime())
+    $(parent).append('<div id="'+@id+'" class="map-canvas" />')
     @$el = $('#'+@id)
-    @zoom = 1 unless @zoom 
+
+    @zoom = 1 unless @zoom
     @loadGoogleMaps()
     # @$el = $('.filters')
     # @$filters = @$el.find('.filter')

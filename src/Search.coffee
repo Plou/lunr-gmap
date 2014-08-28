@@ -1,33 +1,30 @@
 module.exports = class Search
 
-  constructor: (selector, data, score) ->
-    @$field = $(selector)
-    @$toggle = $(".search-toggle")
+  constructor: (parent, data, fields, score) ->
+    @$el = $('<div class="map-search" />')
+    $(parent).append(@$el)
+    @$input = $('<input type="text" />')
+    @$el.append(@$input)
+
     @refs = @results = new Array()
-    @score = if score? then score else 0
-
+    @score = 0 unless score
     @index = lunr ->
-      this.field('title', 100)
-      this.field('subcategory')
-      this.field('chapo', 10)
-      this.field('description')
-      this.ref('id')
+      for field in fields
+        this.field(field[0], field[1])
+        this.ref('index')
 
-    @$field.on "keyup", @initSearch
+    @$input.on "keyup", @initSearch
 
-    @$toggle.on "click", @toggle
+    if data?
+      for item in data
+        @index.add(item)
 
-    if place?
-      for place in data
-        @index.add(place)
-
+    @$el.trigger('ready')
     return @
 
   initSearch: () =>
     @filter()
-    if @refs.length
-      @displayResults()
-    google?.maps.event.trigger(in_map_xml.map, 'search_changed')
+    @$el.trigger('search.change', {@refs})
 
     return @
 
@@ -46,16 +43,8 @@ module.exports = class Search
     return @
 
   clear: ->
-    @$field.val("")
+    @$input.val("")
     @filter()
 
   getFilter: ->
-    return @$field.val()
-
-  displayResults: () ->
-    # in_map_xml.map.displayList(@refs)
-
-  toggle: (e) =>
-    e.preventDefault()
-    @$field.toggleClass('open')
-    # in_map_xml.map.popin.$el.toggleClass('search-open')
+    return @$input.val()
