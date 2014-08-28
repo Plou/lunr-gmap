@@ -17,30 +17,18 @@ module.exports = class LunrGmap
     @templates.list = @$el.attr('data-templateList')
     @fields = @parseFields(@$el.attr('data-lunr'))
 
-    # Init Gmap
-    @map = new Gmap(@selector, @$el.attr('data-latitude'), @$el.attr('data-longitude'), parseInt(@$el.attr('data-zoom')))
-    @map.$el.on "load", =>
-      @loader.map = true
-      Marker = require('./Marker.coffee')
-      if @loader.feed
-        @addMarkers(@feed)
-
-    # Init feed
-    $.get(@$el.attr('data-feed'))
-      .done (data) =>
-        @feed = data
-        @loader.feed = true
-        if @loader.map
-          @addMarkers(@feed)
-        # Init search
-        @search = new Search(@selector, @feed, @fields)
-        @search.$el.on "search.change", (e, data) =>
-          google.maps.event.trigger @map.gmap, "search.changed", data.refs
+    @initGmap()
 
     # Init Popin
     @popin = new Popin(@selector)
 
-    # Init Templates
+    # Get the feed
+    $.get(@$el.attr('data-feed'))
+      .done (data) =>
+        @feed = data
+        @initFeed()
+
+    # Get templates
     $.get(@templates.single)
       .done (data) =>
         @templates.single = _.template(data)
@@ -49,11 +37,29 @@ module.exports = class LunrGmap
       .done (data) =>
         @templates.list = _.template(data)
 
+  initGmap: ->
+    @map = new Gmap(@selector, @$el.attr('data-latitude'), @$el.attr('data-longitude'), parseInt(@$el.attr('data-zoom')))
+    @map.$el.on "load", =>
+      @loader.map = true
+      Marker = require('./Marker.coffee')
+      if @loader.feed
+        @addMarkers(@feed)
+    return @
+
+  initFeed: ()->
+    @loader.feed = true
+    if @loader.map
+      @addMarkers(@feed)
+    # Init search
+    @search = new Search(@selector, @feed, @fields)
+    @search.$el.on "search.change", (e, data) =>
+      google.maps.event.trigger @map.gmap, "search.changed", data.refs
+    return @
+
   addMarkers: (data) ->
     @markers = new Array
     for marker in data
       @addMarker(marker)
-
     return @
 
   addMarker: (data)->
@@ -78,4 +84,5 @@ module.exports = class LunrGmap
       fields.push([field[0], parseInt(field[1])])
     return fields
 
+# Export the class to the global scope
 window.LunrGmap = LunrGmap

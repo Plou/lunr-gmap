@@ -25,7 +25,6 @@ module.exports = class Search
   initSearch: () =>
     @filter()
     @$el.trigger('search.change', {@refs})
-
     return @
 
   getResults: () ->
@@ -45,6 +44,7 @@ module.exports = class Search
   clear: ->
     @$input.val("")
     @filter()
+    return @
 
   getFilter: ->
     return @$input.val()

@@ -4,17 +4,13 @@ module.exports = class Gmap
     $(parent).append('<div id="'+@id+'" class="map-canvas" />')
     @$el = $('#'+@id)
 
-    @zoom = 1 unless @zoom
+    @zoom = 4 unless @zoom
     @loadGoogleMaps()
     # @$el = $('.filters')
     # @$filters = @$el.find('.filter')
     # @setFilter("all")
     # @$filters.on "click", @setFilter
 
-    # @render()
-    return @
-
-  render: () ->
     return @
 
   # getFilter: () ->
@@ -46,6 +42,7 @@ module.exports = class Gmap
     return @
 
   create: () =>
+    # Options
     styles = [
       featureType: "poi"
       elementType: "labels"
@@ -62,7 +59,6 @@ module.exports = class Gmap
       disableDefaultUI: true
       styles: styles
     @$el.trigger("load")
-
     return @
 
   # displaySingle: (data) ->
