@@ -1,0 +1,17 @@
+{
+  "name": "lunr-gmap",
+  "version": "0.0.0",
+  "description": "Create a google map view from a feed with lunr search",
+  "devDependencies": {
+    "glob": "*",
+    "grunt": "*",
+    "grunt-browser-sync": "*",
+    "grunt-coffeeify": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-newer": "*",
+    "grunt-notify": "*",
+    "load-grunt-tasks": "*",
+    "time-grunt": "*"
+  }
+}

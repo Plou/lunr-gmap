@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lunr-Gmap</title>
+  <script src="/lunr-gmap.js"></script>
+  <script src="/bower_components/jQuery/dist/jquery.min.js"></script>
+  <script src="/bower_components/underscore/underscore-min.js"></script>
+  <script src="/bower_components/lunr.js/lunr.min.js"></script>
+  <style media="screen">
+    .map-canvas { height: 300px; }
+  </style>
+</head>
+<body>
+  <h1>Yo!</h1>
+  <div id="map-view" data-latitude="0" data-longitude="0" data-feed="http://www.json-generator.com/api/json/get/bQMWbHYAjm?indent=2"></div>
+  <script>
+    map = new LunrGmap('#map-view');
+  </script>
+</body>
+</html>
