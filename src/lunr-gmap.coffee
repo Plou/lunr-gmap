@@ -1,6 +1,7 @@
 Gmap = require('./Gmap.coffee')
 Search = require('./Search.coffee')
 Popin = require('./Popin.coffee')
+Filters = require('./Filters.coffee')
 Marker = undefined
 
 module.exports = class LunrGmap
@@ -16,6 +17,7 @@ module.exports = class LunrGmap
     @templates.single = @$el.attr('data-templateSingle')
     @templates.list = @$el.attr('data-templateList')
     @fields = @parseFields(@$el.attr('data-lunr'))
+    @filter = @$el.attr('data-filter')
 
     @initGmap()
 
@@ -27,6 +29,7 @@ module.exports = class LunrGmap
       .done (data) =>
         @feed = data
         @initFeed()
+        @initFilters()
 
     # Get templates
     $.get(@templates.single)
@@ -42,19 +45,30 @@ module.exports = class LunrGmap
     @map.$el.on "load", =>
       @loader.map = true
       Marker = require('./Marker.coffee')
+
+      # Init marker if the feed is loaded
       if @loader.feed
         @addMarkers(@feed)
     return @
 
   initFeed: ()->
     @loader.feed = true
+
+    # Init marker if the map is loaded
     if @loader.map
       @addMarkers(@feed)
+
     # Init search
     @search = new Search(@selector, @feed, @fields)
     @search.$el.on "search.change", (e, data) =>
-      google.maps.event.trigger @map.gmap, "search.changed", data.refs
+      google.maps.event.trigger @map.gmap, "search.changed", [data.refs, "index"]
     return @
+
+  # Init Filters
+  initFilters: ()->
+    @filters = new Filters(@selector, @feed, @filter, @$el.attr('data-templateFilters'))
+    @filters.$el.on "search.change", (e, data) =>
+      google.maps.event.trigger @map.gmap, "search.changed", [data.filter, @filter]
 
   addMarkers: (data) ->
     @markers = new Array

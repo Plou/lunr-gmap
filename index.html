@@ -9,10 +9,10 @@
   <script src="/bower_components/lunr.js/lunr.min.js"></script>
   <style media="screen">
     .map-canvas { height: 400px; }
+    .map-filter.active { color: #442211; }
   </style>
 </head>
 <body>
-  <h1>Yo!</h1>
   <div id="map-view"
     data-latitude="50"
     data-longitude="2.5"
@@ -21,7 +21,8 @@
     data-lunr="name|10,gender|10,eyeColor|5,tags|1"
     data-templateSingle="/templates/single.html"
     data-templateList="/templates/list.html"
-    data-feed="/templates/feed.json"></div>
+    data-templateFilters="/templates/filters.html"
+    data-feed="http://www.json-generator.com/api/json/get/bZaGvEKgia?indent=2"></div>
   <script>
     map = new LunrGmap('#map-view');
   </script>

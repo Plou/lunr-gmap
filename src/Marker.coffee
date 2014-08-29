@@ -2,13 +2,13 @@
     # extend the google.maps.Marker object to manage filters
     constructor: (args) ->
       super args
-      google.maps.event.addListener @getMap(), 'search.changed', @checkSearch
+      google.maps.event.addListener @getMap(), 'search.changed', @filter
 
-    getId: () ->
-      return @index.toString()
+    getField: (field) ->
+      return @[field].toString()
 
-    checkSearch: (results) =>
-      if !results.length || @getId() in results
+    filter: (results) =>
+      if !results[0].length || @getField(results[1]) in results[0]
         @setVisible(true)
       else
         @setVisible(false)

@@ -2,6 +2,7 @@ module.exports =
   html:
     files:[
       '*.html'
+      'templates/*.html'
     ]
 
   css:
