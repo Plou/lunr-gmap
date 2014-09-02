@@ -49,7 +49,9 @@ module.exports = class LunrGmap
       if @loader.feed
         @addMarkers(@feed)
 
-      google.maps.event.addListener @map.gmap, 'search.changed', @displayMarkersFromRefs
+      google.maps.event.addListener @map.gmap, 'search.changed', (result) =>
+        if result[1] == "index"
+          @displayMarkersFromRefs(result[0])
     return @
 
   initFeed: ()->
@@ -110,8 +112,8 @@ module.exports = class LunrGmap
 
   getMarkersFromRefs: (result) =>
     markers = new Array()
-    if result[0].length
-      for index in result[0]
+    if result.length
+      for index in result
         markers.push @markers[index]
     return markers
 
