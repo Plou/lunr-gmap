@@ -45,10 +45,11 @@ module.exports = class LunrGmap
     @map.$el.on "load", =>
       @loader.map = true
       Marker = require('./Marker.coffee')
-
       # Init marker if the feed is loaded
       if @loader.feed
         @addMarkers(@feed)
+
+      google.maps.event.addListener @map.gmap, 'search.changed', @displayMarkersFromRefs
     return @
 
   initFeed: ()->
@@ -62,6 +63,7 @@ module.exports = class LunrGmap
     @search = new Search(@selector, @feed, @fields)
     @search.$el.on "search.change", (e, data) =>
       google.maps.event.trigger @map.gmap, "search.changed", [data.refs, "index"]
+
     return @
 
   # Init Filters
@@ -91,12 +93,27 @@ module.exports = class LunrGmap
     @popin.setContent(@templates.single(marker))
     return @
 
+  displayList: (markers) ->
+    @popin.setContent(@templates.list(markers: markers))
+    return @
+
+  displayMarkersFromRefs: (result) =>
+    @displayList(@getMarkersFromRefs(result))
+    return @
+
   parseFields: (data) ->
     fields = new Array()
     for field in data.split(',')
       field = field.split('|')
       fields.push([field[0], parseInt(field[1])])
     return fields
+
+  getMarkersFromRefs: (result) =>
+    markers = new Array()
+    if result[0].length
+      for index in result[0]
+        markers.push @markers[index]
+    return markers
 
 # Export the class to the global scope
 window.LunrGmap = LunrGmap
