@@ -1,7 +1,8 @@
 Gmap = require('./Gmap.coffee')
 Search = require('./Search.coffee')
-Popin = require('./Popin.coffee')
 Filters = require('./Filters.coffee')
+Popin = require('./Popin.coffee')
+List = require('./List.coffee')
 Marker = undefined
 
 ###
@@ -14,9 +15,17 @@ Marker = undefined
 module.exports = class LunrGmap
   constructor: (@selector) ->
     # Loader stores the load state of map and feed
-    @loader =
-      map: false
-      feed: false
+    @loader = new Loader()
+    @loader.set("feed", false)
+    @loader.set("map", false)
+    @loader.set("list", false)
+
+    @loader.emmitter.on "load.update", =>
+      # Init marker if the map is loaded
+      if @loader.isLoaded()
+        # We can now add markers from the feed to the map
+        @addMarkers(@feed)
+
     # Underscore templates
     @templates =
       single: ""
@@ -39,8 +48,13 @@ module.exports = class LunrGmap
 
     @initGmap()
 
-    # Create a popin to display results
+    # Create a popin
     @popin = new Popin(@selector)
+
+    # Create the list to display results
+    @list = new List(@selector, @templates.list)
+    @list.$el.on "load", =>
+      @loader.set("list", true)
 
     # Get the feed
     $.get(@$el.attr('data-feed'))
@@ -54,9 +68,6 @@ module.exports = class LunrGmap
       .done (data) =>
         @templates.single = _.template(data)
 
-    $.get(@templates.list)
-      .done (data) =>
-        @templates.list = _.template(data)
 
   # ## initGmap
   initGmap: ->
@@ -64,34 +75,20 @@ module.exports = class LunrGmap
     @map = new Gmap(@selector, @$el.attr('data-latitude'), @$el.attr('data-longitude'), parseInt(@$el.attr('data-zoom')))
     # Listen to map loading
     @map.$el.on "load", =>
-      @loader.map = true
       # Once the map is loaded we can get the Marker object which extend `google.maps.Marker`
       Marker = require('./Marker.coffee')
-      # Init marker if the feed is loaded
-      if @loader.feed
-        # We can now add markers from the feed to the map
-        @addMarkers(@feed)
-
-      # Listen to map `search.changed` from lunr to display a list of results
-      google.maps.event.addListener @map.gmap, 'search.change', (result) =>
-        if result[2] == "lunr"
-          @displayMarkersFromRefs(result[0])
+      @loader.set("map", true)
     return @
 
   # ## initFeed
   initFeed: ()->
-    @loader.feed = true
-
-    # Init marker if the map is loaded
-    if @loader.map
-      # We can now add markers from the feed to the map
-      @addMarkers(@feed)
-
     # Init lunr search engine
     @search = new Search(@selector, @feed, @fields)
     # On lunr `search.changes` we trigger the same event on map
     @search.$el.on "search.change", (e, data) =>
       google.maps.event.trigger @map.gmap, "search.change", [data.refs, "index", "lunr"]
+
+    @loader.set("feed", true)
 
     return @
 
@@ -104,10 +101,11 @@ module.exports = class LunrGmap
 
   # ## addMarkers
   addMarkers: (data) ->
-    @markers = new Array
+    @markers = new Array()
     # For each object of the feed we add a marker
     for marker in data
       @addMarker(marker)
+    # We create the result list
     return @
 
   # ## addMarker
@@ -117,6 +115,8 @@ module.exports = class LunrGmap
 
     marker = new Marker(data)
     @markers.push(marker)
+
+    @list.addMarker(marker)
 
     # Listen to marker click event to disply the marker's content
     google.maps.event.addListener marker, 'click', () =>
@@ -128,15 +128,6 @@ module.exports = class LunrGmap
     @popin.setContent(@templates.single(marker))
     return @
 
-  # ## displayList
-  displayList: (markers) ->
-    @popin.setContent(@templates.list(markers: markers))
-    return @
-
-  # ## displayMarkersFromRefs
-  displayMarkersFromRefs: (result) =>
-    @displayList(@getMarkersFromRefs(result))
-    return @
 
   # ## parseFields
   # Get fields to search from `data-lunr` attribute
@@ -147,15 +138,6 @@ module.exports = class LunrGmap
       fields.push([field[0], parseInt(field[1])])
     return fields
 
-  # ## getMarkersFromRefs
-  # Get a marker from a index array
-  getMarkersFromRefs: (result) =>
-    markers = new Array()
-    if result.length
-      for index in result
-        markers.push @markers[index]
-    return markers
-
   # ## checkDependencies
   # Checks if jQuery and underscore are included
   checkDependencies: ->
@@ -164,3 +146,18 @@ module.exports = class LunrGmap
 
 # Export the class to the global scope
 window.LunrGmap = LunrGmap
+
+class Loader
+  constructor: ->
+    @emmitter = $({})
+    @modules = new Object()
+
+  isLoaded: =>
+    for module of @modules
+      unless @modules[module]
+        return false
+    return true
+
+  set: (module, value) =>
+    @modules[module] = value
+    @emmitter.trigger "load.update"

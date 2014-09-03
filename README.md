@@ -46,7 +46,7 @@ You'll need three steps in order to use lunr-gmap :
 | `data-templateSingle`*    | Path to the template used to display a marker data        |         |
 | `data-filter`*            | the field use to build the filter navigation              |         |
 | `data-templateFilters`*   | Path to the template used to build the filter navigation  |         |
-| `data-lunr`*              | field&#124;weight use by lunr to crawl the feed                |         |
+| `data-lunr`*              | field&#124;weight use by lunr to crawl the feed           |         |
 | `data-templateList`*      | Path to the template used to display search results       |         |
 
 ## Contributing
