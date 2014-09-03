@@ -1,7 +1,8 @@
 # Road map
 
 ## 1.0.0
-  - [ ] Handle cross filters
+  - [x] Handle cross filters
+  - [ ] Manage list and popin open/close states
   - [x] Create usage documentation
   - [x] Create contribution documentation
   - [ ] Add more google map options

@@ -1,3 +1,5 @@
-<% _.each(markers, function(markers) { %>
-  <h1><%= markers.name %></h1>
+<% _.each(markers, function(marker) { %>
+  <div data-index="<%=marker.index%>">
+    <h1><%= marker.name %></h1>
+  </div>
 <% }); %>

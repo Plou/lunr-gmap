@@ -9,9 +9,10 @@ It's an easy way to set up a google map view from a custom feed.
 Uses a [JSON](http://www.json-generator.com/api/json/get/bZaGvEKgia) feed to fill up a google map an it allow you to search in any field of the feed with [lunr.js](http://lunrjs.com/). A "category" navigation is also generated from a choosen field.
 
 ## Usage
-You'll need three steps in order to use lunr-gmap :
+You'll need four steps in order to use lunr-gmap :
   - Include [jQuery](http://jquery.com/), [Underscore](underscorejs.org) & [lunr-gmap.js](https://github.com/Plou/lunr-gmap) in you page. It is also available on [bower](http://bower.io).
   - Then add the tag with all required attributes
+  - Three templates as to be added.(`data-index` attribute in list template is required)  
   - Initialize the google map view
 
 ```html
