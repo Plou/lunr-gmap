@@ -9,10 +9,21 @@
   <script src="/bower_components/lunr.js/lunr.min.js"></script>
   <style media="screen">
     .map-canvas { height: 400px; }
-    .map-filter.active { color: #442211; }
+    .map-filter.active { color: #CF5F0F; }
   </style>
 </head>
 <body>
+  <!--
+    data-feed: the feed url
+    data-latitude: Latitude of the map center
+    data-longitude: Longitude of the map center
+    data-zoom: Initial zoom
+    data-templateSingle: Path to the template used to display a marker data
+    data-filter: the field use to build the filter navigation
+    data-templateFilters: Path to the template used to build the filter navigation
+    data-lunr: field|weight use by lunr to crawl the feed
+    data-templateList: Path to the template used to display search results
+   -->
   <div id="map-view"
     data-latitude="50"
     data-longitude="2.5"
@@ -24,6 +35,8 @@
     data-templateFilters="/templates/filters.html"
     data-feed="http://www.json-generator.com/api/json/get/bZaGvEKgia?indent=2"></div>
   <script>
+    // Initilaize the map view,
+    // the argument is a jQuery selector which must point to an unique node
     map = new LunrGmap('#map-view');
   </script>
 </body>

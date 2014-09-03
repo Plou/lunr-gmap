@@ -1,6 +1,17 @@
+###
+# Gmap
+## Manage google map initialization and rendering
+# Parameters :
+#   - parent : The dom selector were the map must be added
+#   - latitude : Used to center the map
+#   - longitude : Used to center the map
+#   - zoom : Zoom used
+###
 module.exports = class Gmap
   constructor: (parent, @latitude, @longitude, @zoom) ->
+    # Set an unique id
     @id = 'map-canvas-'+(new Date().getTime())
+    # Create the view node
     $(parent).append('<div id="'+@id+'" class="map-canvas" />')
     @$el = $('#'+@id)
 
@@ -9,14 +20,16 @@ module.exports = class Gmap
 
     return @
 
+  # ## loadGoogleMaps
   loadGoogleMaps: () ->
+    # Get the google map script
     $.getScript 'https://www.google.com/jsapi', =>
       google.load 'maps', '3',
         other_params: 'sensor=false'
         callback: @create
-        libraries: "geometry"
     return @
 
+  # ## create
   create: () =>
     # Options
     styles = [
@@ -34,5 +47,6 @@ module.exports = class Gmap
       visualRefresh: true
       disableDefaultUI: true
       styles: styles
+
     @$el.trigger("load")
     return @
