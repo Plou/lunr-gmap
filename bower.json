@@ -1,6 +1,6 @@
 {
   "name": "lunr-gmap",
-  "version": "0.0.0",
+  "version": "1.0.0-alpha",
   "homepage": "https://github.com/Plou/lunr-gmap",
   "authors": [
     "plou <cl.plou@gmail.com>"
@@ -8,8 +8,9 @@
   "description": "Create a google map view from a feed with lunr search",
   "main": "lunr-gmap.min.js",
   "keywords": [
-    "googlemaps",
-    "lunr"
+    "map",
+    "lunr",
+    "googlemaps"
   ],
   "license": "GPL v3",
   "ignore": [
@@ -21,8 +22,8 @@
     "src"
   ],
   "devDependencies": {
-    "underscore": "~1.7.0",
+    "underscore": "^1.7.0",
     "jQuery": "^1",
-    "lunr.js": "~0.5.5"
+    "lunr.js": "^0.5.5"
   }
 }

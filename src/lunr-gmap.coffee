@@ -29,6 +29,9 @@ module.exports = class LunrGmap
     if @$el.length > 1
       throw new Error("selector argument must refer to an unique node")
 
+    # Remove alternative content
+    @$el.empty()
+
     @templates.single = @$el.attr('data-templateSingle')
     @templates.list = @$el.attr('data-templateList')
     @fields = @parseFields(@$el.attr('data-lunr'))

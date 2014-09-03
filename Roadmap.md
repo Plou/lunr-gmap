@@ -2,8 +2,9 @@
 
 ## 1.0.0
   - [ ] Handle cross filters
-  - [ ] Create usage documentation
-  - [ ] Create contribution documentation
+  - [x] Create usage documentation
+  - [x] Create contribution documentation
+  - [ ] Add more google map options
 
 ## 2.0.0
   - [ ] Ease plugin creation
