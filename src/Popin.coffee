@@ -7,7 +7,7 @@ module.exports = class Popin
     @id = 'popin-content-'+(new Date().getTime())
     @$parent = $(parent).append('<div id="'+@id+'" class="popin-content" />')
     @$el = @$parent.find('.popin-content')
-    @$closeBtn = $parent.find('.popin-close')
+    @$closeBtn = @$parent.find('.popin-close')
     @$closeBtn.on "click", @close
 
     return @
