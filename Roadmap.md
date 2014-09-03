@@ -6,6 +6,7 @@
   - [x] Create usage documentation
   - [x] Create contribution documentation
   - [ ] Add more google map options
+  - [ ] Add Events documentation
 
 ## 2.0.0
   - [ ] Ease plugin creation

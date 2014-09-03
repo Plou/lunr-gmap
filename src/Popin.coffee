@@ -7,7 +7,7 @@ module.exports = class Popin
     @id = 'popin-content-'+(new Date().getTime())
     @$parent = $(parent).append('<div id="'+@id+'" class="popin-content" />')
     @$el = @$parent.find('.popin-content')
-    @$closeBtn = @$parent.find('.close')
+    @$closeBtn = $parent.find('.popin-close')
     @$closeBtn.on "click", @close
 
     return @
@@ -20,12 +20,14 @@ module.exports = class Popin
   # ## show
   open: () =>
     @$parent.addClass("open")
+    @$parent.removeClass("close")
     @$parent.trigger("open")
     return @
 
   # ## close
   close: () =>
     @$parent.trigger("close")
+    @$parent.addClass("close")
     @$parent.removeClass("open")
 
     return @

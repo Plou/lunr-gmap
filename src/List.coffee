@@ -9,8 +9,6 @@ module.exports = class List extends Popin
     @id = 'list-content-'+(new Date().getTime())
     @$parent = $(parent).append('<div id="'+@id+'" class="list-content" />')
     @$el = @$parent.find('.list-content')
-    @$closeBtn = @$parent.find('.close')
-    @$closeBtn.on "click", @close
     @markers = new Array()
 
     $.get(template)
@@ -37,9 +35,26 @@ module.exports = class List extends Popin
     @$el.find('[data-index="'+marker.getField("index")+'"]').hide()
     return @
 
+
+  # ## show
+  open: () =>
+    @$el.addClass("open")
+    @$el.removeClass("close")
+    @$el.trigger("open")
+    return @
+
+  # ## close
+  close: () =>
+    @$el.trigger("close")
+    @$el.addClass("close")
+    @$el.removeClass("open")
+
   # ## render
   render: (markers) ->
     @setContent(@template(markers: markers))
+    @$closeBtn = @$parent.find('.list-close')
+    @$closeBtn.on "click", @close
+
     unless @$el.find('[data-index]').length
       throw new Error('The attribute `data-index="<%=marker.index%>` is required in template file" ')
     return @
