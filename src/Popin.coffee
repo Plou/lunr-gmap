@@ -4,11 +4,20 @@
 ###
 module.exports = class Popin
   constructor: (parent) ->
-    @id = 'popin-content-'+(new Date().getTime())
-    @$parent = $(parent).append('<div id="'+@id+'" class="popin-content" />')
-    @$el = @$parent.find('.popin-content')
-    @$closeBtn = @$parent.find('.popin-close')
+    @id = 'popin-'+(new Date().getTime())
+    @$wrapper = $('<div id="'+@id+'" class="popin-wrap close" />')
+    @$closeBtn = $('<button class="popin-close">close</button>')
+    @$el = $('<div class="popin-content" />')
+
+
+    @$wrapper.append(@$closeBtn)
+    @$wrapper.append(@$el)
+    @$parent = $(parent).append(@$wrapper)
+
     @$closeBtn.on "click", @close
+
+    @$parent.on "list.open", @close
+    @$parent.on "list.close", @open
 
     return @
 
@@ -19,15 +28,15 @@ module.exports = class Popin
 
   # ## show
   open: () =>
-    @$parent.addClass("open")
-    @$parent.removeClass("close")
-    @$parent.trigger("open")
+    @$wrapper.addClass("open")
+    @$wrapper.removeClass("close")
+    @$wrapper.trigger("popin.open")
     return @
 
   # ## close
   close: () =>
-    @$parent.trigger("close")
-    @$parent.addClass("close")
-    @$parent.removeClass("open")
+    @$wrapper.addClass("close")
+    @$wrapper.removeClass("open")
+    @$wrapper.trigger("popin.close")
 
     return @

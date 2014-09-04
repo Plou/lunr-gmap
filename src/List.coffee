@@ -7,7 +7,7 @@ Popin = require('./Popin.coffee')
 module.exports = class List extends Popin
   constructor: (parent, template) ->
     @id = 'list-content-'+(new Date().getTime())
-    @$parent = $(parent).append('<div id="'+@id+'" class="list-content" />')
+    @$parent = $(parent).append('<div id="'+@id+'" class="list-content close" />')
     @$el = @$parent.find('.list-content')
     @markers = new Array()
 
@@ -15,6 +15,14 @@ module.exports = class List extends Popin
       .done (data) =>
         @template = _.template(data)
         @$el.trigger "load"
+
+    @$parent.on "search.change", (e) =>
+      # get the engine indentifier
+      if e.target.className == "map-search" then @open()
+
+    @$parent.on "popin.open", @close
+    @$parent.on "popin.close", @open
+
     return @
 
   # ## addMarker
@@ -25,12 +33,13 @@ module.exports = class List extends Popin
     google.maps.event.addListener marker, 'visible_changed', (e) =>
       if marker.visible then @showMarker(marker) else @hideMarker(marker)
 
+
   # ## showMarker
   showMarker: (marker) ->
     @$el.find('[data-index="'+marker.getField("index")+'"]').show()
     return @
 
-  # ## render
+  # ## hideMarker
   hideMarker: (marker) ->
     @$el.find('[data-index="'+marker.getField("index")+'"]').hide()
     return @
@@ -38,16 +47,18 @@ module.exports = class List extends Popin
 
   # ## show
   open: () =>
-    @$el.addClass("open")
-    @$el.removeClass("close")
-    @$el.trigger("open")
+    unless @$el.hasClass("open")
+      @$el.addClass("open")
+      @$el.removeClass("close")
+      @$el.trigger("list.open")
     return @
 
   # ## close
   close: () =>
-    @$el.trigger("close")
-    @$el.addClass("close")
-    @$el.removeClass("open")
+    unless @$el.hasClass("close")
+      @$el.trigger("close")
+      @$el.addClass("close")
+      @$el.removeClass("list.open")
 
   # ## render
   render: (markers) ->
@@ -57,4 +68,10 @@ module.exports = class List extends Popin
 
     unless @$el.find('[data-index]').length
       throw new Error('The attribute `data-index="<%=marker.index%>` is required in template file" ')
+
+    @$el.find('[data-index]').on "click", (e) =>
+      @close()
+      index = $(e.target).closest('[data-index]').attr("data-index")
+      google.maps.event.trigger markers[index], 'click'
+
     return @

@@ -87,7 +87,6 @@ module.exports = class LunrGmap
     # On lunr `search.changes` we trigger the same event on map
     @search.$el.on "search.change", (e, data) =>
       google.maps.event.trigger @map.gmap, "search.change", [data.refs, "index", "lunr"]
-
     @loader.set("feed", true)
 
     return @
@@ -105,7 +104,6 @@ module.exports = class LunrGmap
     # For each object of the feed we add a marker
     for marker in data
       @addMarker(marker)
-    # We create the result list
     return @
 
   # ## addMarker
@@ -126,6 +124,7 @@ module.exports = class LunrGmap
   # ## displaySingle
   displaySingle: (marker) ->
     @popin.setContent(@templates.single(marker))
+    @popin.open()
     return @
 
 

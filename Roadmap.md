@@ -2,7 +2,7 @@
 
 ## 1.0.0
   - [x] Handle cross filters
-  - [ ] Manage list and popin open/close states
+  - [x] Manage list and popin open/close states
   - [x] Create usage documentation
   - [x] Create contribution documentation
   - [ ] Add more google map options
