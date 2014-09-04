@@ -59,6 +59,7 @@ With node installed here the few commands you'll need to run :
 ```bash
 git clone git@github.com:Plou/lunr-gmap.git
 cd lunr-gmap
+git checkout work
 npm install
 bower install
 grunt
