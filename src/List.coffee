@@ -56,9 +56,9 @@ module.exports = class List extends Popin
   # ## close
   close: () =>
     unless @$el.hasClass("close")
-      @$el.trigger("close")
       @$el.addClass("close")
-      @$el.removeClass("list.open")
+      @$el.removeClass("open")
+      @$el.trigger("list.close")
 
   # ## render
   render: (markers) ->
