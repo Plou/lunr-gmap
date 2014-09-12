@@ -54,7 +54,7 @@ You'll need four steps in order to use lunr-gmap :
 
 lunr-gmap is made with [coffeescript](http://coffeescript.org/) and [coffeeify](https://github.com/jnordberg/coffeeify). To compile the coffee sources you'll need [node](http://nodejs.org/). To run the example you may use [bower](http://bower.io) to get the dependencies.
 
-With node and installed here are the few commands you'll need to run :
+With node and bower installed here are the few commands you'll need to run :
 
 ```bash
 git clone git@github.com:Plou/lunr-gmap.git
