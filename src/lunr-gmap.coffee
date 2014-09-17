@@ -4,7 +4,6 @@ Filters = require('./Filters.coffee')
 Popin = require('./Popin.coffee')
 List = require('./List.coffee')
 Marker = undefined
-
 ###
 # LunrGmap
 ## Create a google map view from a feed with lunr search and category navigation
@@ -67,7 +66,7 @@ module.exports = class LunrGmap
     $.get(@templates.single)
       .done (data) =>
         @templates.single = _.template(data)
-
+    return @
 
   # ## initGmap
   initGmap: ->
@@ -97,7 +96,7 @@ module.exports = class LunrGmap
     # On filters `search.changes` we trigger the same event on map
     @filters.$el.on "search.change", (e, data) =>
       google.maps.event.trigger @map.gmap, "search.change", [data.filter, @filter, "filters"]
-
+    return @
   # ## addMarkers
   addMarkers: (data) ->
     @markers = new Array()
@@ -142,6 +141,7 @@ module.exports = class LunrGmap
   checkDependencies: ->
     if !$? then throw new Error('jQuery not found')
     if !_? then throw new Error('underscore not found')
+    return @
 
 # Export the class to the global scope
 window.LunrGmap = LunrGmap
@@ -150,6 +150,7 @@ class Loader
   constructor: ->
     @emmitter = $({})
     @modules = new Object()
+    return @
 
   isLoaded: =>
     for module of @modules
@@ -160,3 +161,6 @@ class Loader
   set: (module, value) =>
     @modules[module] = value
     @emmitter.trigger "load.update"
+    return @
+
+return

@@ -5,7 +5,7 @@ module.exports =
     files: [{
       expand: true,
       cwd: '<%= in8.jsDest %>',
-      src: '*.js',
+      src: 'lunr-gmap.js',
       dest: '<%= in8.jsDest %>'
       ext: '.min.js'
     }]
